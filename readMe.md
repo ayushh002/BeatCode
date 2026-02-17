@@ -1,7 +1,5 @@
 Beatcode – System Design Document 
 
-Note: This is an ongoing project, and some functionalities are under active development.
-
 1. Problem Statement
 
 > Design and implement an online coding platform that allows users to securely write, execute, and submit code across multiple programming languages. The system must safely handle untrusted code execution, support authenticated user workflows, scale with increasing submission volume, and maintain strict separation between execution, business logic, and persistence layers.

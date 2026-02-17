@@ -140,9 +140,9 @@ function ProblemPage(){
     }
 
     return(
-        <div className='h-screen flex bg-[#222222]'>  
+        <div className='min-h-screen flex flex-col sm:flex-row bg-[#222222]'>  
             {/* Left Panel */}
-            <div className="w-1/2 flex flex-col border-r border-base-300">
+            <div className="w-full sm:w-1/2 flex-1 sm:flex-none flex flex-col border-r border-base-300">
                 {/* Left Tabs */}
                 <div className="tabs tabs-bordered bg-[#2A2A2A] px-4">
                     <button 
@@ -204,7 +204,7 @@ function ProblemPage(){
                                             {problem.visibleTestCases.map((testcase, index)=>(
                                                 <div key={index} className='bg-[#2A2A2A] p-4 rounded-lg'>
                                                    <h4 className="font-semibold mb-2">Test Case {index + 1}:</h4>
-                                                    <div className="space-y-2 text-sm font-mono">
+                                                    <div className="space-y-2 text-sm font-mono overflow-x-auto">
                                                         <p><strong>Input: </strong>{testcase.input}</p>
                                                         <p><strong>Output: </strong>{testcase.output}</p>
                                                         <p><strong>Explanation: </strong>{testcase.explanation}</p>
@@ -264,7 +264,7 @@ function ProblemPage(){
             </div>
 
             {/* Right Panel */}
-            <div className="w-1/2 flex flex-col">
+            <div className="w-full sm:w-1/2 flex-1 sm:flex-none flex flex-col">
                 {/* Right Tabs */}
                 <div className="tabs tabs-bordered bg-[#2A2A2A] px-4">
                     <button 
@@ -380,7 +380,7 @@ function ProblemPage(){
                                             <div className="mt-4 space-y-2">
                                                 {runResult.testCases.map((tc, i) => (
                                                     <div key={i} className="bg-[#242424] p-3 rounded text-xs">
-                                                    <div className="font-mono">
+                                                    <div className="font-mono overflow-x-auto">
                                                         <div><strong>Input:</strong> {tc.stdin}</div>
                                                         <div><strong>Expected:</strong> {tc.expected_output}</div>
                                                         <div><strong>Output:</strong> {tc.stdout}</div>
@@ -399,10 +399,10 @@ function ProblemPage(){
                                         ) : (
                                             <div>
                                                 <h4 className="font-bold text-xl text-red-500">Error</h4>
-                                                <div className="mt-4 space-y-2">
+                                                <div className="mt-4 space-y-2 ">
                                                     {runResult.testCases.map((tc, i)=>(
                                                         <div key={i} className="bg-[#242424] py-3 pl-3 pr-10 rounded text-xs">
-                                                            <div className="font-mono space-y-0.5">
+                                                            <div className="font-mono space-y-0.5 overflow-x-auto">
                                                                 <div><strong>Input:</strong> {tc.stdin}</div>
                                                                 <div><strong>Expected:</strong> {tc.expected_output}</div>
                                                                 <div><strong>Output:</strong> {tc.stdout}</div>

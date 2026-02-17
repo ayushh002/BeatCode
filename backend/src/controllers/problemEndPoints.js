@@ -1,6 +1,7 @@
 const Problem = require('../Models/problem');
 const User = require('../Models/user');
 const Submission = require('../Models/submission');
+const SolutionVideo = require('../Models/solutionVideo');
 const {checkSolution} = require('../utils/problemUtility');
 
 
@@ -106,10 +107,45 @@ const getProblemById = async(req, res) =>{
             return res.status(404).send("Problem not found");
         }
 
-        return res.status(200).json({
+        // Fetch metadata of the video and attach it with the problem
+        const videoMetadata = await SolutionVideo.findOne({problemId: id});
+        if(videoMetadata){
+            const response = {
+                ...getProblem.toObject(),
+                secureUrl: videoMetadata.secureUrl,
+                thumbnailUrl: videoMetadata.thumbnailUrl,
+                duration: videoMetadata.duration
+            };
+            return res.status(200).json({
+                message: "Problem Fetched Successfully",
+                problem: response
+            });
+        }
+                
+        res.status(200).json({
             message: "Problem Fetched Successfully",
             problem: getProblem
         });
+    }
+    catch(err){
+        res.status(500).send("Error: "+err.message);
+    }
+}
+
+const getProblemAdmin = async(req, res) =>{
+    try{
+        const {id} = req.params;
+
+        if(!id) 
+            return res.status(404).send("Problem Id not found");
+
+        const getProblem = await Problem.findById(id);
+
+        if (!getProblem) {
+            return res.status(404).send("Problem not found");
+        }
+
+        return res.status(200).json(getProblem);
     }
     catch(err){
         res.status(500).send("Error: "+err.message);
@@ -167,12 +203,7 @@ const submittedProblems = async (req, res) => {
 
         const totalSubmissions = await Submission.find({userId, problemId});
 
-        res.status(200).json(
-            {
-                submissionCount: totalSubmissions.length,
-                submissions: totalSubmissions
-            }
-        );
+        res.status(200).json(totalSubmissions);
     }
     catch(err) {
         res.status(500).send("Error: "+err.message);
@@ -180,4 +211,4 @@ const submittedProblems = async (req, res) => {
 }
 
 
-module.exports = {createProblem, updateProblem, deleteProblem, getProblemById, getAllProblems, solvedProblemsByUser, submittedProblems};
+module.exports = {createProblem, getProblemAdmin, updateProblem, deleteProblem, getProblemById, getAllProblems, solvedProblemsByUser, submittedProblems};

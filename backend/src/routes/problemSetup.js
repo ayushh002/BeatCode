@@ -1,7 +1,7 @@
 const express = require('express');
 const problemRouter = express.Router();
 
-const {createProblem, updateProblem, deleteProblem, getProblemById, getAllProblems, solvedProblemsByUser, submittedProblems} = require('../controllers/problemEndPoints');
+const {createProblem, getProblemAdmin, updateProblem, deleteProblem, getProblemById, getAllProblems, solvedProblemsByUser, submittedProblems} = require('../controllers/problemEndPoints');
 
 const adminMiddleware = require('../middleware/adminMiddleware');
 const userMiddleware = require('../middleware/userMiddleware');
@@ -16,6 +16,8 @@ problemRouter.patch('/update/:id', adminMiddleware, updateProblem);
 // Delete a problem
 problemRouter.delete('/delete/:id', adminMiddleware, deleteProblem);
 
+// fetch all the problem details for admin
+problemRouter.get('/admin/:id', adminMiddleware, getProblemAdmin);
 
 // Any authenticated user/admin can call these routes
 // Fetch a particular problem

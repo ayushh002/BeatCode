@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 
+require('dotenv').config();
 const main = require('./Config/db');
 const redisClient = require('./Config/redis');
 const cookieParser = require('cookie-parser');
@@ -11,14 +12,16 @@ const bcrypt = require('bcrypt');
 const authRouter = require('./routes/userAuth');
 const problemRouter = require('./routes/problemSetup');
 const submitRouter = require('./routes/submit');
+const aiRouter = require('./routes/aiBot');
+const videoRouter = require('./routes/videoCreator');
 
 const cors = require('cors');
 
 app.use(cors({
-    origin:["http://localhost:5173"],
+    origin:'http://localhost:5173',
     credentials:true
 }))
-require('dotenv').config();
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -29,6 +32,10 @@ app.use('/user', authRouter);
 app.use('/problem', problemRouter);
 // Mount api endpoints of submittion 
 app.use('/submission', submitRouter);
+// Mount api endpoints of chat
+app.use('/ai', aiRouter);
+// Mount api endpoints of video solution
+app.use('/video', videoRouter);
 
 
 // Function to create main admin if none exists

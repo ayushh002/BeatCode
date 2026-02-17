@@ -21,7 +21,7 @@ authRouter.post('/admin/register', adminMiddleware, adminRegister);
 // delete user account
 authRouter.delete('/delete-account', userMiddleware, deleteAccount);
 
-authRouter.get('/check', userMiddleware, check)
+authRouter.get('/check', check)
 // getProfile
 // authRouter.post('/getProfile', getProfile);
 

@@ -48,7 +48,7 @@ const register = async (req, res)=>{
         });
     }
     catch(err){
-        res.status(401).send("Error: "+err.message);
+        res.status(400).send("Error: "+err.message);
     }
 }
 
@@ -59,9 +59,9 @@ const login = async (req, res)=>{
 
         // Check For Empty Email and Password
         if(!req.body.emailId)
-            throw new Error("Invalid Credentials");
+            throw new Error("Enter Your Email");
         if(!req.body.password)
-            throw new Error("Invalid Credentials");
+            throw new Error("Enter Password");
 
         // Find the user exist or not
         const user = await User.findOne({emailId: req.body.emailId});
@@ -186,10 +186,27 @@ const deleteAccount = async (req, res) => {
 
 const check = async (req, res) => {
     try{
-        const user = await User.findById(req.payload._id);
+        const {token} = req.cookies;
         
-        if(!user)
-            res.status(404).send("User not found.");
+        if(!token){
+            return res.status(404).json(null);
+        }
+                
+        // Check token expiry
+        const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        // Check if the token is invalidated
+        const isInValid = await redisClient.exists(`token:${token}`);
+        
+        if(isInValid){
+            return res.status(404).json(null);
+        }
+                
+        const user = await User.findById(payload._id);
+        
+        if(!user){
+            return res.status(404).json(null);
+        }
 
         const reply = {
             _id: user._id,

@@ -1,19 +1,28 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosClient from "./utils/axiosClient";
+import toast from 'react-hot-toast';
 
 export const registerUser = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post('/user/register', userData);
+      toast.success("Registration successful!");
       return response.data.user;
     }
     catch (err) {
+      console.log('Login error: ', err);
+      let message = '';
       if (err.response?.status === 401) {
-        return rejectWithValue("User Registration Failed");
+        message = "User Registration Failed.";
+        toast.error(message);
+        return rejectWithValue(message);
       }
-      const message = err.response?.data || err.message || 'Something went wrong';
-      return rejectWithValue(message);
+      else{
+        message = err.response?.data || err.message || 'Something went wrong';
+        toast.error(message);
+        return rejectWithValue(message);
+      }
     }
   }
 )
@@ -23,14 +32,22 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post('/user/login', credentials);
+      toast.success("Login successful!");
       return response.data.user;
     }
     catch (err) {
+      console.log('Login error: ', err);
+      let message = '';
       if (err.response?.status === 401) {
-        return rejectWithValue("Invalid email or password");
+        message = "Invalid email or password";
+        toast.error(message);
+        return rejectWithValue(message);
       }
-      const message = err.response?.data || err.message || 'Something went wrong';
-      return rejectWithValue(message);
+      else{
+        message = err.response?.data || err.message || 'Something went wrong';
+        toast.error(message);
+        return rejectWithValue(message);
+      }
     }
   }
 )
@@ -56,6 +73,7 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axiosClient.post('/user/logout');
+      toast.success("Logged out successfully!"); 
       return null;
     }
     catch (err) {

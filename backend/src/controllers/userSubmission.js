@@ -59,8 +59,8 @@ const submitCode = async (req, res)=>{
         for(const result of testResult){
             if(result.status_id==3){ // Test case passed
                 testCasesPassed++;
-                runtime += parseFloat(result.time);
-                memory = Math.max(memory, result.memory);
+                runtime += parseFloat(result.time || 0);
+                memory = Math.max(memory, result.memory || 0);
             }
             else if (result.status_id === 4) {  // Wrong Answer
                 status = 'Wrong Answer';
@@ -98,9 +98,13 @@ const submitCode = async (req, res)=>{
             await user.save();
         }
         
+        const accepted = (status=='Accepted')
         return res.status(201).json({
-            message: "Submission Saved Successfully",
-            submitProblem: submitProblem
+            accepted,
+            totalTestCases: submitProblem.testCasesTotal,
+            passedTestCases: testCasesPassed,
+            runtime,
+            memory
         });
 
     }
@@ -142,10 +146,26 @@ const runCode = async (req, res)=>{
         // Fetch detailed results for each submission
         const testResult = await submitTokens(tokens);
 
-        
+        // Calculate success, runtime, and memory
+        let success = true;
+        let runtime = 0;
+        let memory = 0;
+
+        for(const result of testResult){
+            if(result.status_id === 3){ // Test case passed
+                runtime += parseFloat(result.time || 0);
+                memory = Math.max(memory, result.memory || 0);
+            }
+            else{ // Any failure
+                success = false;
+            }
+        }
+
         return res.status(200).json({
-            message: "Code Successfully Executed",
-            result: testResult
+            success,
+            runtime,
+            memory,
+            testCases:testResult
         });
 
     }

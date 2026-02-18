@@ -140,7 +140,7 @@ function ProblemPage(){
     }
 
     return(
-        <div className='min-h-screen flex flex-col sm:flex-row bg-[#222222]'>  
+        <div className='min-h-screen sm:h-screen flex flex-col sm:flex-row bg-[#222222]'>  
             {/* Left Panel */}
             <div className="w-full sm:w-1/2 flex-1 sm:flex-none flex flex-col border-r border-base-300">
                 {/* Left Tabs */}
@@ -306,9 +306,10 @@ function ProblemPage(){
                             </div>
 
                             {/* Monaco Editor */}
-                            <div className="flex-1 ">
+                            <div className="flex-1 min-h-[200px]">
                                 <Editor
                                     height="100%"
+                                    className="min-h-[200px]"
                                     language={getLanguageForMonaco(selectedLanguage)} 
                                     value={code}
                                     onChange={(value) => setCode(value || '')}

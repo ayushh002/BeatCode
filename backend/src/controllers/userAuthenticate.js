@@ -33,7 +33,13 @@ const register = async (req, res)=>{
         const token = user.getJWT();
 
         // Send the token as a cookie - removed from brower cookies after expiry
-        res.cookie("token", token, {maxAge: 60*60*1000, httpOnly: true}); // age in milliseconds
+        res.cookie("token", token, {
+                maxAge: 60*60*1000,
+                httpOnly: true,
+                secure: true,
+                sameSite: "None"
+            }
+        ); // age in milliseconds
 
         const reply = {
             _id: user._id,
@@ -80,7 +86,13 @@ const login = async (req, res)=>{
         const token = user.getJWT();
 
         // sent token in the browser's cookies
-        res.cookie("token", token, {maxAge: 60*60*1000, httpOnly: true});
+        res.cookie("token", token, {
+                maxAge: 60*60*1000,
+                httpOnly: true,
+                secure: true,
+                sameSite: "None"
+            }
+        );
 
         const reply = {
             _id: user._id,
@@ -114,7 +126,11 @@ const logout = async (req, res)=>{
         await redisClient.expireAt(`token:${token}`,payload.exp);
 
         // Clear the token cookie immediately on the client
-        res.cookie("token", null, {expires: new Date(Date.now())});
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+        });
         res.status(200).send("User Logged Out Successfully.")
     }
     catch(err){

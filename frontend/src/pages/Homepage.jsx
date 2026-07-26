@@ -48,14 +48,15 @@ function Homepage() {
         if (!deleteId)
             return;
         try {
-            await axiosClient.post(`/problem/delete/${deleteId}`);
+            const id = deleteId;
+            setDeleteId(null); // reset the delete id state to null
+            
+            await axiosClient.delete(`/problem/delete/${id}`);
 
             // remove the problem from problem list
-            const filteredProblems = problems.filter(problem => problem._id !== deleteId);
+            const filteredProblems = problems.filter(problem => problem._id !== id);
             setProblems(filteredProblems);
-
             toast.success("Problem Deleted Successfully.");
-            setDeleteId(null); // reset the delete id state to null
         }
         catch (err) {
             toast.error("Error deleting the problem.");
@@ -293,6 +294,7 @@ function Homepage() {
                             <button
                                 className="btn btn-error bg-red-600 hover:bg-red-700 border-none shadow-none text-white"
                                 onClick={deleteProblem}
+                                disabled={!deleteId}
                             >
                                 Delete
                             </button>
